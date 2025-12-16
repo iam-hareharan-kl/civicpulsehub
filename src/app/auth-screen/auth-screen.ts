@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../service/auth-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-auth',
@@ -19,13 +20,13 @@ export class AuthScreen implements OnInit {
   isRegisterMode = false;
   successMessage = '';
   errorMessage = '';
-
   loginForm!: FormGroup;
   registerForm!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +65,11 @@ export class AuthScreen implements OnInit {
         if (response.token) {
           this.authService.saveToken(response.token);
         }
+
+        if(response.role === 'CITIZEN'){this.router.navigate(['/citizen']);}
+        else if (response.role === 'OFFICER'){this.router.navigate(['/officer']);}
+        else{this.router.navigate(['/dashboard']);}
+
         // Navigate to dashboard or home page
       },
       error: (error) => {
