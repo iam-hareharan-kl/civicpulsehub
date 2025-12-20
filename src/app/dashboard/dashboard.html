@@ -1,1 +1,66 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+  <div class="header">
+    <h1>Admin Dashboard</h1>
+    <button class="logout-btn" (click)="logout()">Logout</button>
+  </div>
+
+  <div class="card list-card">
+    <h2>All Submitted Grievances</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Location</th>
+          <th>Status</th>
+          <th>Priority</th>
+          <th>Assign To</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let g of grievances">
+          <td>{{ g.createdAt | date:'shortDate' }}</td>
+          <td>{{ g.department }}</td>
+          <td>{{ g.description }}</td>
+          <td>{{ g.location }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="g.status.toLowerCase()">
+              {{ g.status }}
+            </span>
+          </td>
+          
+          <td>
+            <span *ngIf="g.status !== 'PENDING'" [ngClass]="'prio-' + g.priority?.toLowerCase()">
+              {{ g.priority }}
+            </span>
+            <select *ngIf="g.status === 'PENDING'" [(ngModel)]="g.selectedPriority">
+              <option value="" disabled selected>Set Priority</option>
+              <option value="HIGH">High</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="LOW">Low</option>
+            </select>
+          </td>
+
+          <td>
+            <span *ngIf="g.officer">{{ g.officer.fullName }}</span>
+            <select *ngIf="!g.officer" [(ngModel)]="g.selectedOfficerId">
+              <option value="" disabled selected>Select Officer</option>
+              <option *ngFor="let off of officers" [value]="off.id">
+                {{ off.fullName }}
+              </option>
+            </select>
+          </td>
+
+          <td>
+            <button *ngIf="g.status === 'PENDING'" class="assign-btn" (click)="assign(g)">
+              Assign
+            </button>
+            <span *ngIf="g.status !== 'PENDING'">✅ Done</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,1 +1,87 @@
-<p>citizen works!</p>
+<div class="dashboard-container">
+  <h1>Citizen Dashboard</h1>
+
+  <div class="dashboard-header">
+    <h1>Citizen Dashboard</h1>
+    <button class="logout-btn" (click)="logout()">Logout</button>
+  </div>
+
+  <div class="stats-container">
+    <div class="card stat-card">
+      <h3>Submitted</h3>
+      <p class="count">{{ stats.total }}</p>
+    </div>
+    <div class="card stat-card success">
+      <h3>Solved</h3>
+      <p class="count">{{ stats.solved }}</p>
+    </div>
+    <div class="card stat-card warning">
+      <h3>Pending</h3>
+      <p class="count">{{ stats.pending }}</p>
+    </div>
+  </div>
+
+  <div class="content-wrapper">
+    <div class="card form-card">
+      <h2>Report a Problem</h2>
+      <div *ngIf="successMessage" class="success-msg">{{ successMessage }}</div>
+      
+      <form [formGroup]="grievanceForm" (ngSubmit)="onSubmit()">
+        <label>Department</label>
+        <select formControlName="department">
+          <option value="Roads">Roads & Transport</option>
+          <option value="Sanitation">Sanitation & Waste</option>
+          <option value="Electricity">Electricity</option>
+          <option value="Water">Water Supply</option>
+        </select>
+
+        <label>Description</label>
+        <textarea formControlName="description" rows="4" placeholder="Describe the issue..."></textarea>
+
+        <label>Location</label>
+        <div class="location-box">
+          <input type="text" formControlName="location" placeholder="Enter location or use GPS">
+          <button type="button" (click)="getLocation()">📍 GPS</button>
+        </div>
+
+        <label>Upload Photo</label>
+        <input type="file" (change)="onFileSelected($event)">
+
+        <button type="submit" class="submit-btn">Submit Grievance</button>
+      </form>
+    </div>
+
+    <div class="card list-card">
+      <h2>Your Grievances</h2>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Department</th>
+              <th>Location</th>
+              <th>Description</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let g of grievances">
+              <td>{{ g.createdAt | date:'shortDate' }}</td>
+              <td>{{ g.department }}</td>
+              <td>{{ g.location }}</td>
+              <td>{{ g.description }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="g.status.toLowerCase()">
+                  {{ g.status }}
+                </span>
+              </td>
+            </tr>
+            <tr *ngIf="grievances.length === 0">
+              <td colspan="4">No grievances found.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

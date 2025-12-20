@@ -68,7 +68,7 @@ export class AuthScreen implements OnInit {
 
         if(response.role === 'CITIZEN'){this.router.navigate(['/citizen']);}
         else if (response.role === 'OFFICER'){this.router.navigate(['/officer']);}
-        else{this.router.navigate(['/dashboard']);}
+        else{this.router.navigate(['/admin']);}
 
         // Navigate to dashboard or home page
       },

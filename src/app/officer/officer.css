@@ -1,0 +1,29 @@
+/* Container & Header */
+.dashboard-container { padding: 20px; font-family: 'Poppins', sans-serif; background: #f3f4f6; min-height: 100vh; }
+.header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+.logout-btn { background: #ef4444; color: white; padding: 8px 20px; border: none; border-radius: 8px; cursor: pointer; }
+.card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+
+/* Table Styles */
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+.no-data { text-align: center; color: #666; padding: 20px; }
+
+/* Status Badges */
+.status-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+.assigned { background: #dbeafe; color: #2563eb; }
+.in_progress { background: #fff7ed; color: #ea580c; }
+.resolved { background: #d1fae5; color: #059669; }
+
+/* Priority Colors */
+.prio-high { color: #dc2626; font-weight: bold; }
+.prio-medium { color: #d97706; font-weight: bold; }
+.prio-low { color: #059669; font-weight: bold; }
+
+/* Action Buttons */
+.action-btn { padding: 6px 12px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 13px; }
+.start-btn { background-color: #f59e0b; } /* Orange */
+.start-btn:hover { background-color: #d97706; }
+.resolve-btn { background-color: #10b981; } /* Green */
+.resolve-btn:hover { background-color: #059669; }
+.completed-text { color: #059669; font-weight: bold; }

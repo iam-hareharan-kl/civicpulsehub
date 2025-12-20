@@ -1,0 +1,45 @@
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logout-btn {
+    background: #ef4444; /* Red color */
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+.logout-btn:hover { background: #dc2626;}
+.dashboard-container { padding: 20px; font-family: 'Poppins', sans-serif; background: #f3f4f6; min-height: 100vh; }
+.stats-container { display: flex; gap: 20px; margin-bottom: 30px; }
+.card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+
+.stat-card { flex: 1; text-align: center; }
+.stat-card h3 { margin: 0; font-size: 14px; color: #666; }
+.stat-card .count { font-size: 32px; font-weight: bold; margin: 10px 0 0; color: #333; }
+.stat-card.success .count { color: #10b981; }
+.stat-card.warning .count { color: #f59e0b; }
+
+.content-wrapper { display: flex; gap: 20px; flex-wrap: wrap; }
+.form-card { flex: 1; min-width: 300px; }
+.list-card { flex: 2; min-width: 400px; }
+
+input, select, textarea { width: 100%; padding: 10px; margin: 8px 0 15px; border: 1px solid #ddd; border-radius: 8px; }
+.location-box { display: flex; gap: 10px; }
+.location-box button { width: auto; padding: 0 15px; }
+
+.submit-btn { width: 100%; background: #667eea; color: white; padding: 12px; border: none; border-radius: 8px; cursor: pointer; }
+.submit-btn:hover { background: #5a67d8; }
+
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+.status-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.status-badge.pending { background: #fffbeb; color: #b45309; }
+.status-badge.resolved { background: #d1fae5; color: #065f46; }
+.success-msg { background: #d1fae5; color: #065f46; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
