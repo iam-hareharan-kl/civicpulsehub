@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -26,7 +26,8 @@ export class AuthScreen implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -69,12 +70,14 @@ export class AuthScreen implements OnInit {
         if(response.role === 'CITIZEN'){this.router.navigate(['/citizen']);}
         else if (response.role === 'OFFICER'){this.router.navigate(['/officer']);}
         else{this.router.navigate(['/admin']);}
+        this.cdr.detectChanges();
 
         // Navigate to dashboard or home page
       },
       error: (error) => {
         console.error('Login failed', error);
         this.errorMessage = error.error?.message || 'Login failed. Please try again.';
+        this.cdr.detectChanges();
       }
     });
   }
@@ -87,8 +90,10 @@ export class AuthScreen implements OnInit {
       next: (response) => {
         console.log('Registration successful', response);
         // Show success message
-        this.successMessage = 'Account created successfully, You can sign in now';
+        if (response.role === 'CITIZEN') {this.successMessage = 'Account created successfully, You can sign in now';}
+        else {this.successMessage = 'Account created successfully, Please wait for approval';}
         this.registerForm.reset({ role: 'CITIZEN' });
+        this.cdr.detectChanges();
         
         // Switch to login after 2 seconds
         setTimeout(() => {
@@ -98,6 +103,7 @@ export class AuthScreen implements OnInit {
       error: (error) => {
         console.error('Registration failed', error);
         this.errorMessage = error.error?.message || 'Registration failed. Please try again.';
+        this.cdr.detectChanges();
       }
     });
   }

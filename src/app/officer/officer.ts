@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { GrievanceService } from '../service/grievance';
 import { AuthService } from '../service/auth-service';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-officer-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,FormsModule],
   templateUrl: './officer.html',
   styleUrls: ['./officer.css']
 })
@@ -32,15 +33,19 @@ export class Officer implements OnInit {
     });
   }
 
-  updateStatus(id: number, newStatus: string) {
-    if (!confirm(`Are you sure you want to mark this as ${newStatus}?`)) return;
+  updateStatus(g: any, newStatus: string) {
+    const message = g.tempMessage || ''; // Get typed message
+    
+    if (newStatus === 'RESOLVED' && !message) {
+        if(!confirm("Resolve without a note?")) return;
+    }
 
-    this.grievanceService.updateStatus(id, newStatus).subscribe({
+    this.grievanceService.updateStatus(g.id, newStatus, message).subscribe({
       next: () => {
-        alert("Status Updated!");
-        this.loadAssignedTasks(); // Refresh list
+        alert("Updated Successfully!");
+        this.loadAssignedTasks();
       },
-      error: () => alert("Failed to update status")
+      error: () => alert("Failed to update.")
     });
   }
 

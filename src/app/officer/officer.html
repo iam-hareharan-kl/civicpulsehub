@@ -20,7 +20,7 @@
           <th>Description</th>
           <th>Location</th>
           <th>Current Status</th>
-          <th>Action</th>
+          <th>Message</th> <th>Action</th>
         </tr>
       </thead>
       <tbody>
@@ -43,16 +43,23 @@
             </span>
           </td>
 
+          <td>
+            <input type="text" 
+                   [(ngModel)]="g.tempMessage" 
+                   placeholder="Note for Admin..."
+                   class="note-input">
+          </td>
+
           <td class="action-cell">
             <button *ngIf="g.status === 'ASSIGNED'" 
                     class="action-btn start-btn" 
-                    (click)="updateStatus(g.id, 'IN_PROGRESS')">
+                    (click)="updateStatus(g, 'IN_PROGRESS')">
               Start Work
             </button>
             
             <button *ngIf="g.status === 'IN_PROGRESS'" 
                     class="action-btn resolve-btn" 
-                    (click)="updateStatus(g.id, 'RESOLVED')">
+                    (click)="updateStatus(g, 'RESOLVED')">
               Resolve
             </button>
             

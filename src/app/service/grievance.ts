@@ -53,10 +53,10 @@ export class GrievanceService {
   }
 
   // Officer: Update status
-  updateStatus(id: number, status: string): Observable<any> {
+  updateStatus(id: number, status: string, message: string = ""): Observable<any> {
     return this.http.put(
       `${this.apiUrl}/${id}/status`, 
-      { status }, 
+      { status, message }, 
       { headers: this.getAuthHeaders() }
     );
   }

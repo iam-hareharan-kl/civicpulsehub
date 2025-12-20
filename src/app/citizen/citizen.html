@@ -1,6 +1,4 @@
 <div class="dashboard-container">
-  <h1>Citizen Dashboard</h1>
-
   <div class="dashboard-header">
     <h1>Citizen Dashboard</h1>
     <button class="logout-btn" (click)="logout()">Logout</button>
@@ -62,6 +60,7 @@
               <th>Location</th>
               <th>Description</th>
               <th>Status</th>
+              <th>Message from officer</th>
             </tr>
           </thead>
           <tbody>
@@ -75,6 +74,12 @@
                   {{ g.status }}
                 </span>
               </td>
+              <td>
+                <span *ngIf="g.officerMessage" class="officer-msg" title="{{g.officerMessage}}">
+                    💬 {{ g.officerMessage }}
+                </span>
+                <span *ngIf="!g.officerMessage" style="color: #ccc;">-</span>
+          </td>
             </tr>
             <tr *ngIf="grievances.length === 0">
               <td colspan="4">No grievances found.</td>
