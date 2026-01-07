@@ -1,0 +1,142 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div class="brand">
+      <h1>Citizen<span>Portal</span></h1>
+    </div>
+    <button class="logout-btn" (click)="logout()">
+      <span class="icon">➜</span> Logout
+    </button>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card blue">
+      <div class="icon">📝</div>
+      <div class="info"><h3>Submitted</h3><p class="count">{{ stats.total }}</p></div>
+    </div>
+    <div class="stat-card green">
+      <div class="icon">✅</div>
+      <div class="info"><h3>Resolved</h3><p class="count">{{ stats.solved }}</p></div>
+    </div>
+    <div class="stat-card orange">
+      <div class="icon">⏳</div>
+      <div class="info"><h3>Pending</h3><p class="count">{{ stats.pending }}</p></div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="card form-section">
+      <div class="card-header">
+        <h2>Report a New Issue</h2>
+        <p>Submit a new grievance to the city council.</p>
+      </div>
+      <div *ngIf="successMessage" class="alert success">{{ successMessage }}</div>
+      <form [formGroup]="grievanceForm" (ngSubmit)="onSubmit()">
+         <div class="form-row">
+            <div class="form-group half-width">
+                <label>Department</label>
+                <div class="select-wrapper">
+                <select formControlName="department">
+                    <option value="Roads">🚧 Roads & Transport</option>
+                    <option value="Sanitation">🧹 Sanitation & Waste</option>
+                    <option value="Electricity">💡 Electricity</option>
+                    <option value="Water">💧 Water Supply</option>
+                </select>
+                <span class="dropdown-arrow">▼</span>
+                </div>
+            </div>
+            <div class="form-group half-width">
+                <label>Location</label>
+                <div class="input-with-btn">
+                <input type="text" formControlName="location" placeholder="Enter street or landmark" />
+                <button type="button" class="gps-btn" (click)="getLocation()">📍 GPS</button>
+                </div>
+            </div>
+         </div>
+         <div class="form-group">
+            <label>Description</label>
+            <textarea formControlName="description" rows="4" placeholder="Describe the issue..."></textarea>
+         </div>
+         <div class="form-group">
+            <label>Photo Evidence</label>
+            <div class="file-upload-wrapper">
+                <input type="file" (change)="onFileSelected($event)" id="file-upload" class="hidden-input" />
+                <label for="file-upload" class="upload-label">
+                <span class="upload-icon">📷</span>
+                <span *ngIf="!selectedFile">Click to upload photo evidence</span>
+                <span *ngIf="selectedFile" class="file-selected">Selected: {{ selectedFile.name }}</span>
+                </label>
+            </div>
+         </div>
+         <button type="submit" class="submit-btn">Submit Grievance</button>
+      </form>
+    </div>
+
+    <div class="history-section">
+      <h2 class="section-title">My Reports</h2>
+      
+      <div *ngIf="grievances.length === 0" class="empty-state">
+         <p>No reports submitted yet.</p>
+      </div>
+
+      <div class="grievance-grid">
+        <div class="g-card" *ngFor="let g of grievances">
+            <div class="g-card-header">
+                <span class="dept-tag">{{ g.department }}</span>
+                <span class="date">{{ g.createdAt | date:'mediumDate' }}</span>
+            </div>
+            
+            <div class="g-card-body">
+                <p class="description">{{ g.description }}</p>
+                <small class="location">📍 {{ g.location }}</small>
+            </div>
+
+            <div *ngIf="g.notified && g.resolutionImageUrl" class="resolution-evidence">
+                    <p class="evidence-label">✅ Proof of Resolution:</p>
+                    <div class="evidence-thumb">
+                        <a [href]="'http://localhost:8080/uploads/' + g.resolutionImageUrl" target="_blank">
+                            View Officer's Photo ↗
+                        </a>
+                    </div>
+                </div>
+
+            <div class="g-card-footer">
+                <div class="status-wrapper">
+                    <span class="status-pill" 
+                          [ngClass]="(g.notified || g.status === 'REJECTED') ? g.status.toLowerCase() : 'pending'">
+                        {{ (g.notified || g.status === 'REJECTED') ? g.status : 'PENDING' }}
+                    </span>
+                </div>
+                
+                <div *ngIf="g.officerMessage && (g.notified || g.status === 'REJECTED')" class="officer-reply">
+                    <strong>Officer:</strong> "{{ g.officerMessage }}"
+                </div>
+
+                <div class="actions" *ngIf="g.status === 'RESOLVED' && g.notified">
+                    <button *ngIf="!g.feedback" class="rate-btn" (click)="openFeedbackModal(g)">Rate Service</button>
+                    <span *ngIf="g.feedback" class="rating-star">⭐ {{ g.rating }}/5</span>
+                    <button *ngIf="!g.feedback" class="reopen-btn" (click)="reopen(g)">Reopen ↻</button>
+                </div>
+                
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" *ngIf="showFeedbackModal">
+     <div class="modal-content">
+        <h3>Rate Resolution</h3>
+        <select [(ngModel)]="feedbackRating">
+            <option [ngValue]="5">5 - Excellent</option>
+            <option [ngValue]="4">4 - Good</option>
+            <option [ngValue]="3">3 - Average</option>
+            <option [ngValue]="2">2 - Poor</option>
+            <option [ngValue]="1">1 - Very Poor</option>
+        </select>
+        <textarea [(ngModel)]="feedbackText" rows="3" placeholder="Comment..."></textarea>
+        <div class="modal-actions">
+          <button class="cancel-btn" (click)="closeFeedbackModal()">Cancel</button>
+          <button class="submit-btn" (click)="submitFeedback()">Submit</button>
+        </div>
+      </div>
+  </div>
+</div>

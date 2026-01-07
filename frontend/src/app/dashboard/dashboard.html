@@ -1,0 +1,246 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div class="brand">
+      <h1>Admin<span>Console</span></h1>
+    </div>
+    <div class="header-right">
+      <span class="admin-badge">Administrator</span>
+      <button class="logout-btn" (click)="logout()">Logout ➜</button>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="section-container" *ngIf="pendingOfficers.length > 0">
+      <div class="section-header">
+        <h2>🔔 Pending Access Requests</h2>
+        <span class="count-badge">{{ pendingOfficers.length }}</span>
+      </div>
+
+      <div class="officer-grid">
+        <div class="officer-card" *ngFor="let off of pendingOfficers">
+          <div class="card-left">
+            <div class="avatar">{{ off.fullName.charAt(0) }}</div>
+            <div class="info">
+              <h3>{{ off.fullName }}</h3>
+              <p>{{ off.email }}</p>
+            </div>
+          </div>
+          <div class="card-right">
+            <label>Assign Department</label>
+            <div class="action-group">
+              <select [(ngModel)]="off.selectedDept">
+                <option value="" disabled selected>Select...</option>
+                <option value="Roads">Roads</option>
+                <option value="Sanitation">Sanitation</option>
+                <option value="Electricity">Electricity</option>
+                <option value="Water">Water</option>
+              </select>
+              <button class="approve-btn" (click)="approveOfficer(off)" title="Approve">✔</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-container">
+      <div class="section-header">
+        <h2>⏳ SLA Configuration (Hours)</h2>
+      </div>
+      <div class="sla-grid">
+        <div *ngFor="let sla of slaConfigs" class="sla-card">
+          <span class="sla-label">{{ sla.priority }}</span>
+          <div class="sla-input-group">
+            <input type="number" [(ngModel)]="sla.resolutionTimeInHours" />
+            <button class="save-mini-btn" (click)="updateSLA(sla)">💾</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ticket-board">
+      <div class="board-top-bar">
+        <div class="title-group">
+          <h2>Grievance Tickets</h2>
+          <p>Manage and assign incoming reports.</p>
+        </div>
+
+        <div class="controls-area">
+          <div class="filters">
+            <input type="date" [(ngModel)]="filterDate" class="filter-control" />
+            <select [(ngModel)]="filterDept" class="filter-control">
+              <option value="">All Departments</option>
+              <option value="Roads">🚧 Roads</option>
+              <option value="Sanitation">🧹 Sanitation</option>
+              <option value="Electricity">💡 Electricity</option>
+              <option value="Water">💧 Water</option>
+            </select>
+            <button *ngIf="filterDate || filterDept" class="clear-btn" (click)="clearFilters()">
+              Clear
+            </button>
+          </div>
+
+          <div class="tabs">
+            <button
+              class="tab-btn"
+              [class.active]="activeTab === 'PENDING'"
+              (click)="setActiveTab('PENDING')"
+            >
+              Pending
+            </button>
+            <button
+              class="tab-btn"
+              [class.active]="activeTab === 'REOPENED'"
+              (click)="setActiveTab('REOPENED')"
+            >
+              Reopened
+            </button>
+            <button
+              class="tab-btn"
+              [class.active]="activeTab === 'IN_PROGRESS'"
+              (click)="setActiveTab('IN_PROGRESS')"
+            >
+              In Progress
+            </button>
+            <button
+              class="tab-btn"
+              [class.active]="activeTab === 'RESOLVED'"
+              (click)="setActiveTab('RESOLVED')"
+            >
+              Resolved
+            </button>
+            <button
+              class="tab-btn"
+              [class.active]="activeTab === 'REJECTED'"
+              (click)="setActiveTab('REJECTED')"
+            >
+              Rejected
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ticket-list-wrapper">
+        <div *ngIf="filteredGrievances.length === 0" class="empty-state">
+          <p>
+            No tickets found in <strong>{{ activeTab }}</strong
+            >.
+          </p>
+        </div>
+
+        <div class="ticket-card" *ngFor="let g of filteredGrievances">
+          <div
+            class="priority-strip"
+            [ngClass]="g.priority ? g.priority.toLowerCase() : 'medium'"
+          ></div>
+
+          <div class="ticket-body">
+            <div class="ticket-meta-row">
+              <span class="ticket-id">#{{ g.id }}</span>
+              <span class="dept-tag">{{ g.department }}</span>
+              <span class="date">{{ g.createdAt | date : 'mediumDate' }}</span>
+            </div>
+            <div class="citizen-info" *ngIf="g.user" style="margin-top: 6px; font-size: 13px; color: #374151; display: flex; align-items: center; gap: 6px;">
+               <span title="Citizen Name">👤 <strong>{{ g.user.fullName }}</strong></span>
+               <span title="Citizen Email" style="color: #6b7280;">&lt;{{ g.user.email }}&gt;</span>
+            </div>
+            <h3 class="ticket-desc">{{ g.description }}</h3>
+            <div
+              *ngIf="g.status === 'REOPENED'"
+              class="admin-reopen-box"
+              style="
+                background: #fff7ed;
+                border: 1px solid #fdba74;
+                padding: 10px;
+                margin: 10px 0;
+                border-radius: 6px;
+              "
+            >
+              <strong style="color: #c2410c; display: block; margin-bottom: 5px"
+                >⚠ Citizen Reopened this Ticket:</strong
+              >
+              <em style="color: #431407">"{{ g.reopenReason }}"</em>
+            </div>
+
+            <div class="ticket-evidence">
+              <span class="location-tag">📍 {{ g.location }}</span>
+              <a
+                *ngIf="g.imageUrl"
+                [href]="'http://localhost:8080/uploads/' + g.imageUrl"
+                target="_blank"
+                class="view-link"
+                >View Citizen's Photo ↗</a
+              >
+              <a
+                [href]="'http://localhost:8080/uploads/' + g.resolutionImageUrl"
+                target="_blank"
+                class="view-link"
+                style="color: #059669"
+              >
+                View Officer's Photo ↗</a
+              >
+            </div>
+
+            <div *ngIf="g.status === 'REJECTED'" class="rejection-note">
+              <strong>🚫 Rejection Reason:</strong> {{ g.officerMessage || 'No reason provided.' }}
+            </div>
+          </div>
+
+          <div class="ticket-actions">
+            <div class="control-box" *ngIf="g.status === 'PENDING' || g.status === 'REOPENED'">
+              <label>Set Priority</label>
+              <select [(ngModel)]="g.selectedPriority" class="ticket-select">
+                <option value="HIGH">🔴 High</option>
+                <option value="MEDIUM">🟠 Medium</option>
+                <option value="LOW">🟢 Low</option>
+              </select>
+            </div>
+
+            <div class="control-box" *ngIf="g.status !== 'REJECTED'">
+              <label>Officer</label>
+
+              <div *ngIf="!g.officer || g.status === 'REOPENED'">
+                <select [(ngModel)]="g.selectedOfficerId" class="ticket-select">
+                  <option value="" disabled selected>Assign to...</option>
+                  <option *ngFor="let off of getOfficersByDept(g.department)" [value]="off.id">
+                    {{ off.fullName }}
+                  </option>
+                </select>
+              </div>
+
+              <div *ngIf="g.officer && g.status !== 'REOPENED'" class="officer-badge">
+                👮 {{ g.officer.fullName }}
+              </div>
+            </div>
+
+            <div class="btn-stack" *ngIf="g.status === 'PENDING' || g.status === 'REOPENED'">
+              <button class="action-btn assign" (click)="assign(g)">
+                {{ g.status === 'REOPENED' ? 'Verify & Assign' : 'Assign Grievance' }}
+              </button>
+
+              <button class="action-btn reject" (click)="reject(g)">Reject</button>
+            </div>
+          
+
+          <div
+            class="btn-stack"
+            *ngIf="(g.status === 'IN_PROGRESS' || g.status === 'RESOLVED') && !g.notified"
+          >
+            <button class="action-btn notify" (click)="notify(g)">🔔 Notify Citizen</button>
+          </div>
+          <div
+            *ngIf="g.notified && (g.status === 'IN_PROGRESS' || g.status === 'RESOLVED')"
+            class="notified-badge"
+          >
+            ✅ Citizen Notified
+          </div>
+
+          <div *ngIf="g.status === 'RESOLVED' && g.rating" class="rating-box">
+            ⭐ {{ g.rating }}/5
+            <p class="feedback-text">{{ g.feedback }}</p>
+          </div>
+          <div *ngIf="g.status === 'REJECTED'" class="rejected-badge">❌ Rejected</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

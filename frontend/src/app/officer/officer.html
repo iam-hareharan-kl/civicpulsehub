@@ -1,0 +1,119 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div class="brand">
+      <h1>Officer<span>Portal</span></h1>
+    </div>
+    <button class="logout-btn" (click)="logout()">Logout ➜</button>
+  </div>
+
+  <div class="main-content">
+    <div class="task-board-container">
+      <div class="board-header">
+         <div class="header-text">
+            <h2>My Assignment Board</h2>
+            <p>Track your active and completed tasks.</p>
+         </div>
+         <div class="tabs">
+            <button class="tab-btn" [class.active]="activeTab === 'ASSIGNED'" (click)="setActiveTab('ASSIGNED')">
+              📥 Assigned
+            </button>
+            <button class="tab-btn" [class.active]="activeTab === 'IN_PROGRESS'" (click)="setActiveTab('IN_PROGRESS')">
+              ⚡ In Progress
+            </button>
+            <button class="tab-btn" [class.active]="activeTab === 'RESOLVED'" (click)="setActiveTab('RESOLVED')">
+              ✅ Resolved
+            </button>
+         </div>
+      </div>
+
+      <div class="task-grid">
+         <div *ngIf="filteredGrievances.length === 0" class="no-tasks">
+            <div class="icon">🎉</div>
+            <p>No tasks found in <strong>{{ activeTab.replace('_', ' ') }}</strong>.</p>
+         </div>
+
+         <div class="task-card" *ngFor="let g of filteredGrievances">
+            
+            <div class="card-top">
+                <div class="badges-left">
+                    <span class="prio-pill" [ngClass]="g.priority?.toLowerCase()">{{ g.priority || 'MEDIUM' }}</span>
+                </div>
+                
+                <div class="badges-right">
+                    <span *ngIf="g.expectedCompletionDate && g.status !== 'RESOLVED'" 
+                          class="sla-badge" 
+                          [ngClass]="getTimeRemainingClass(g)">
+                        ⏳ {{ getTimeRemaining(g) }}
+                    </span>
+                    <span class="date-text">{{ g.createdAt | date:'MMM d' }}</span>
+                </div>
+            </div>
+
+            <div class="card-content">
+                <div class="img-container" *ngIf="g.imageUrl">
+                    <a [href]="'http://localhost:8080/uploads/' + g.imageUrl" target="_blank">
+                        <img [src]="'http://localhost:8080/uploads/' + g.imageUrl" alt="Evidence" />
+                    </a>
+                </div>
+                
+                <h3 class="dept-title">{{ g.department }} Issue</h3>
+                <p class="desc-text">{{ g.description }}</p>
+                <div class="location-row">📍 {{ g.location }}</div>
+                <div *ngIf="g.reopenReason" class="reopen-alert" style="background: #fff1f2; border-left: 4px solid #e11d48; padding: 10px; margin-top: 10px; border-radius: 4px;">
+                    <p style="margin: 0; font-size: 12px; color: #9f1239; font-weight: bold;">⚠ Reopened by Citizen</p>
+                    <p style="margin: 4px 0 0 0; font-size: 13px; color: #881337;">"{{ g.reopenReason }}"</p>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="action-area">
+                    
+                    <div class="input-wrap" *ngIf="g.status !== 'RESOLVED'">
+                        <input type="text" [(ngModel)]="g.tempMessage" placeholder="Add resolution note..." class="note-input" />
+                    </div>
+
+                    <div class="upload-wrap" *ngIf="g.status === 'IN_PROGRESS'" style="margin-top: 10px; margin-bottom: 10px;">
+                        <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 5px;">
+                            📷 Upload Evidence (Required):
+                        </label>
+                        <input type="file" (change)="onFileSelected($event, g)" accept="image/*">
+                    </div>
+                    
+                    <div class="resolved-info" *ngIf="g.status === 'RESOLVED'">
+                        
+                        <div class="info-block">
+                            <span class="label">Your Note:</span>
+                            <p class="text">{{ g.officerMessage || 'No note added.' }}</p>
+                        </div>
+
+                        <div class="info-block feedback-block">
+                            <span class="label">Citizen Feedback:</span>
+                            <div *ngIf="g.rating || g.feedback">
+                                <div class="stars">⭐ {{ g.rating }}/5</div>
+                                <p class="feedback-text">"{{ g.feedback }}"</p>
+                            </div>
+                            <div *ngIf="!g.rating && !g.feedback" class="no-feedback">
+                                (Waiting for feedback...)
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <button *ngIf="g.status === 'ASSIGNED' || g.status === 'REOPENED'" class="btn-start" (click)="updateStatus(g, 'IN_PROGRESS')">
+                        Start Work
+                    </button>
+
+                    <button *ngIf="g.status === 'IN_PROGRESS'" class="btn-resolve" (click)="updateStatus(g, 'RESOLVED')">
+                        Mark Resolved
+                    </button>
+                    
+                    <div *ngIf="g.status === 'RESOLVED'" class="done-status">
+                        <span class="check">✔</span> Completed
+                    </div>
+                </div>
+            </div>
+         </div>
+      </div>
+    </div>
+  </div>
+</div>

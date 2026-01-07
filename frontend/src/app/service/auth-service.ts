@@ -17,12 +17,11 @@ interface RegisterRequest {
 interface AuthResponse {
   token: string | null;
   message: string;
-  role : string;
+  role: string;
 }
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private apiUrl = 'http://localhost:8080/api/auth';
@@ -43,5 +42,9 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('token');
+  }
+
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/forgot-password`, { email });
   }
 }
