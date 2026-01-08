@@ -35,10 +35,10 @@ export class Admin implements OnInit {
   ) {}
 
   ngOnInit() {
-    // 4. Only load data if running in the Browser (Client-side)
     if (isPlatformBrowser(this.platformId)) {
         this.loadData();
         this.loadPendingOfficers();
+        this.loadSLAConfigs();
     }
   }
 
@@ -160,8 +160,6 @@ export class Admin implements OnInit {
     });
   }
   
-  // ... Keep the rest of your methods (SLA configs, logout, etc.) same as before ...
-  
   loadSLAConfigs() {
     if (isPlatformBrowser(this.platformId)) {
         this.http.get<any[]>('http://localhost:8080/api/sla', {
@@ -173,6 +171,7 @@ export class Admin implements OnInit {
                 }).subscribe(() => this.loadSLAConfigs());
             } else {
                 this.slaConfigs = data;
+                this.cdr.detectChanges();
             }
         });
     }

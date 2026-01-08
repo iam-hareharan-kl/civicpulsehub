@@ -19,14 +19,8 @@ export class AuthScreen implements OnInit {
   errorMessage = '';
   loginForm!: FormGroup;
   registerForm!: FormGroup;
-  isLoginMode = true;
-  isForgotMode = false; // 🔴 Add this flag
-  forgotEmail = '';
-  email = '';
-  password = '';
-  fullName = '';
-  role = 'CITIZEN';
-
+  
+  
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -56,7 +50,6 @@ export class AuthScreen implements OnInit {
 
   switchToLogin(): void {
     this.isRegisterMode = false;
-    this.isForgotMode = false;
     this.successMessage = '';
     this.errorMessage = '';
   }
@@ -119,38 +112,4 @@ export class AuthScreen implements OnInit {
       },
     });
   }
-
-  toggleMode() {
-    this.isLoginMode = !this.isLoginMode;
-    this.isForgotMode = false; // Reset forgot mode when switching login/signup
-  }
-
-  toggleForgot() {
-    this.isForgotMode = !this.isForgotMode;
-    this.isLoginMode = true; // Ensure we are technically in "Login" context
-  }
-
-  submitForgot() {
-  if (!this.forgotEmail) {
-    this.errorMessage = "Please enter your email.";
-    return;
-  }
-  this.authService.forgotPassword(this.forgotEmail).subscribe({
-    next: (res) => {
-       this.successMessage = res.message;
-       this.errorMessage = '';
-       // Optional: switch back to login after delay
-    },
-    error: (err) => {
-       this.errorMessage = "Failed to process request.";
-    }
-  });
-}
-
-  switchToForgot() {
-  this.isRegisterMode = false;
-  this.isForgotMode = true;
-  this.errorMessage = '';
-  this.successMessage = '';
-}
 }

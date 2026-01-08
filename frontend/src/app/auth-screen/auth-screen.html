@@ -39,7 +39,7 @@
   </div>
 
   <div class="form-panel">
-    <!-- <div class="form-wrapper">
+    <div class="form-wrapper">
       
       <div class="success-message" *ngIf="successMessage">
         {{ successMessage }}
@@ -99,89 +99,5 @@
         </div>
       </div>
 
-    </div> -->
-    <div class="form-wrapper">
-      
-      <div class="success-message" *ngIf="successMessage">
-        {{ successMessage }}
-      </div>
-      <div class="error-message" *ngIf="errorMessage">
-        {{ errorMessage }}
-      </div>
-
-      <div class="auth-box" *ngIf="!isRegisterMode && !isForgotMode">
-        <div class="header">
-          <h2>Welcome Back</h2>
-          <p>Please enter your details to sign in.</p>
-        </div>
-
-        <form [formGroup]="loginForm" (ngSubmit)="submitLogin()">
-          <label>Email Address</label>
-          <input type="email" formControlName="email" placeholder="citizen@example.com" />
-
-          <label>Password</label>
-          <input type="password" formControlName="password" placeholder="Password" />
-          
-          <div class="forgot-link" style="text-align: right; margin-top: -10px; margin-bottom: 15px;">
-            <a (click)="submitForgot()" style="color: #2563eb; font-size: 0.85rem; cursor: pointer; text-decoration: none;">Forgot Password?</a>
-          </div>
-
-          <button type="submit" class="primary-btn">Sign In</button>
-        </form>
-
-        <div class="switch-text">
-          <p>New to CivicPulse? <a (click)="switchToRegister()">Create an account</a></p>
-        </div>
-      </div>
-
-      <div class="auth-box" *ngIf="isRegisterMode && !isForgotMode">
-        <div class="header">
-          <h2>Join the Community</h2>
-          <p>Start making a difference today.</p>
-        </div>
-
-        <form [formGroup]="registerForm" (ngSubmit)="submitRegister()">
-          <label>Full Name</label>
-          <input type="text" formControlName="fullName" placeholder="John Doe" />
-
-          <label>Email Address</label>
-          <input type="email" formControlName="email" placeholder="citizen@example.com" />
-
-          <label>Password</label>
-          <input type="password" formControlName="password" placeholder="Create a password" />
-
-          <label>I am a...</label>
-          <select formControlName="role">
-            <option value="CITIZEN">Citizen (Report Issues)</option>
-            <option value="OFFICER">Officer (Resolve Issues)</option>
-          </select>
-
-          <button type="submit" class="primary-btn">Sign Up</button>
-        </form>
-
-        <div class="switch-text">
-          <p>Already have an account? <a (click)="switchToLogin()">Sign in here</a></p>
-        </div>
-      </div>
-
-      <div class="auth-box" *ngIf="isForgotMode">
-        <div class="header">
-          <h2>Reset Password</h2>
-          <p>Enter your email to receive a reset link.</p>
-        </div>
-
-        <form (ngSubmit)="submitForgot()">
-            <label>Registered Email</label>
-            <input type="email" [(ngModel)]="forgotEmail" name="forgotEmail" placeholder="name@example.com" required>
-            
-            <button type="submit" class="primary-btn">Send Reset Link</button>
-        </form>
-
-        <div class="switch-text">
-            <p>Remembered it? <a (click)="switchToLogin()">Back to Login</a></p>
-        </div>
-      </div>
-
     </div>
-  </div>
 </div>
