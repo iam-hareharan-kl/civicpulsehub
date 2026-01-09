@@ -2,9 +2,12 @@ package com.civicpulse.backend.controller;
 
 import com.civicpulse.backend.model.User;
 import com.civicpulse.backend.repository.UserRepository;
+import com.civicpulse.backend.repository.GrievanceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +17,7 @@ import java.util.Map;
 public class AdminController {
 
     private final UserRepository userRepository;
+    private final GrievanceRepository grievanceRepository;
 
     // 1. Get Pending Officers
     @GetMapping("/officers/pending")
@@ -35,5 +39,22 @@ public class AdminController {
 
         userRepository.save(officer);
         return ResponseEntity.ok(Map.of("message", "Officer approved and assigned."));
+    }
+
+    @GetMapping("/analytics/status")
+    public ResponseEntity<Map<String, Long>> getGrievanceAnalytics() {
+        List<Object[]> results = grievanceRepository.countGrievancesByStatus();
+        Map<String, Long> analytics = new HashMap<>();
+
+        // Default values to ensure all keys exist
+        analytics.put("PENDING", 0L);
+        analytics.put("IN_PROGRESS", 0L);
+        analytics.put("RESOLVED", 0L);
+        analytics.put("REJECTED", 0L);
+
+        for (Object[] result : results) {
+            analytics.put((String) result[0], (Long) result[1]);
+        }
+        return ResponseEntity.ok(analytics);
     }
 }

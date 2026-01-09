@@ -75,14 +75,12 @@ public class AuthController {
         User user = userRepository.findByEmail(email).orElse(null);
 
         if (user == null) {
-            // For security, don't reveal if user doesn't exist
+            // Return OK to avoid enumerating valid emails
             return ResponseEntity.ok(Map.of("message", "If an account exists, a reset link has been sent."));
         }
 
-        // Generate a temporary token (using your JWT Service)
         String resetToken = jwtService.generateToken(user.getEmail(), user.getRole());
-
-        // In a real app, point this to a Frontend Reset Page, e.g., http://localhost:4200/reset-password?token=...
+        // Note: You will need a frontend route for /reset-password later
         String resetLink = "http://localhost:4200/reset-password?token=" + resetToken;
 
         emailService.sendSimpleEmail(
@@ -92,5 +90,39 @@ public class AuthController {
         );
 
         return ResponseEntity.ok(Map.of("message", "If an account exists, a reset link has been sent."));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
+        String token = request.get("token");
+        String newPassword = request.get("newPassword");
+
+        if (token == null || newPassword == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Token and password are required"));
+        }
+
+        try {
+            // 1. Extract email from token
+            String email = jwtService.extractUsername(token);
+
+            // 2. Find user
+            User user = userRepository.findByEmail(email).orElse(null);
+
+            // 3. Validate token belonging to user
+            if (user == null || !jwtService.isTokenValid(token, user.getEmail())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Map.of("message", "Invalid or expired reset token."));
+            }
+
+            // 4. Update password
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+
+            return ResponseEntity.ok(Map.of("message", "Password reset successfully. You can now login."));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "Invalid token."));
+        }
     }
 }
