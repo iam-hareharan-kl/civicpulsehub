@@ -5,11 +5,13 @@ import { GrievanceService } from '../service/grievance';
 import { AuthService } from '../service/auth-service';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { BaseChartDirective } from 'ng2-charts'; // Import Chart Directive
+import { ChartOptions } from 'chart.js';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, BaseChartDirective],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css']
 })
@@ -18,6 +20,18 @@ export class Admin implements OnInit {
   officers: any[] = [];
   pendingOfficers: any[] = [];
   slaConfigs: any[] = [];
+  isBrowser: boolean;
+
+  public pieChartOptions: ChartOptions<'pie'> = {
+    responsive: true,
+  };
+  public pieChartLabels = ['Pending', 'In Progress', 'Resolved', 'Rejected'];
+  public pieChartDatasets = [ {
+    data: [0, 0, 0, 0],
+    backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#ef4444']
+  } ];
+  public pieChartLegend = true;
+  public pieChartPlugins = [];
   
   activeTab: 'PENDING' | 'IN_PROGRESS' | 'RESOLVED' | 'REJECTED' | 'REOPENED' = 'PENDING';
   filterDate: string = '';
@@ -32,13 +46,16 @@ export class Admin implements OnInit {
     private cdr: ChangeDetectorRef,
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object // 3. Inject Platform ID
-  ) {}
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
         this.loadData();
         this.loadPendingOfficers();
         this.loadSLAConfigs();
+        this.loadAnalytics();
     }
   }
 
@@ -198,5 +215,25 @@ export class Admin implements OnInit {
   logout() {
     this.authService.logout();
     this.router.navigate(['/']);
+  }
+
+  loadAnalytics() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.http.get<any>(`${this.apiUrl}/admin/analytics/status`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      }).subscribe(data => {
+        // Update Chart Data
+        this.pieChartDatasets = [{
+          data: [
+            data['PENDING'] || 0,
+            data['IN_PROGRESS'] || 0,
+            data['RESOLVED'] || 0,
+            data['REJECTED'] || 0
+          ],
+          backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#ef4444']
+        }];
+        this.cdr.detectChanges();
+      });
+    }
   }
 }

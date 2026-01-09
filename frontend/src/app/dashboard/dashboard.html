@@ -10,6 +10,23 @@
   </div>  
 
   <div class="main-content">
+
+    <div class="section-container" *ngIf="isBrowser" style="flex: 1; min-width: 300px;">
+            <div class="section-header">
+                <h2>📊 Analytics</h2>
+            </div>
+            <div style="height: 300px; display: flex; justify-content: center;">
+                <canvas baseChart
+                    [type]="'pie'"
+                    [datasets]="pieChartDatasets"
+                    [labels]="pieChartLabels"
+                    [options]="pieChartOptions"
+                    [plugins]="pieChartPlugins"
+                    [legend]="pieChartLegend">
+                </canvas>
+            </div>
+        </div>
+
     <div class="section-container" *ngIf="pendingOfficers.length > 0">
       <div class="section-header">
         <h2>🔔 Pending Access Requests</h2>
@@ -216,7 +233,12 @@
               <button class="action-btn assign" (click)="assign(g)">
                 {{ g.status === 'REOPENED' ? 'Verify & Assign' : 'Assign Grievance' }}
               </button>
+              <div class="reject">
+              <button class="action-btn reject" (click)="reject(g)">Reject</button>
+              </div>
+            </div>
 
+            <div class="reject">
               <button class="action-btn reject" (click)="reject(g)">Reject</button>
             </div>
           

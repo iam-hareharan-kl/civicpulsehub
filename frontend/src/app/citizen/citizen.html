@@ -114,7 +114,10 @@
                 <div class="actions" *ngIf="g.status === 'RESOLVED' && g.notified">
                     <button *ngIf="!g.feedback" class="rate-btn" (click)="openFeedbackModal(g)">Rate Service</button>
                     <span *ngIf="g.feedback" class="rating-star">⭐ {{ g.rating }}/5</span>
-                    <button *ngIf="!g.feedback" class="reopen-btn" (click)="reopen(g)">Reopen ↻</button>
+                    
+                </div>
+                <div class="reopen" *ngIf="g.status === 'RESOLVED' && g.notified">
+                  <button class="reopen-btn" (click)="reopen(g)">Reopen ↻</button>
                 </div>
                 
             </div>
