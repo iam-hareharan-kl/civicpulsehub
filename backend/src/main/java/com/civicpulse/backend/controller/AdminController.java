@@ -6,6 +6,8 @@ import com.civicpulse.backend.repository.GrievanceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,20 +42,33 @@ public class AdminController {
         return ResponseEntity.ok(Map.of("message", "Officer approved and assigned."));
     }
 
-    @GetMapping("/analytics/status")
-    public ResponseEntity<Map<String, Long>> getGrievanceAnalytics() {
-        List<Object[]> results = grievanceRepository.countGrievancesByStatus();
-        Map<String, Long> analytics = new HashMap<>();
+    @GetMapping("/analytics/dashboard")
+    public ResponseEntity<Map<String, Object>> getDashboardAnalytics() {
+        Map<String, Object> response = new HashMap<>();
 
-        // Default values to ensure all keys exist
-        analytics.put("PENDING", 0L);
-        analytics.put("IN_PROGRESS", 0L);
-        analytics.put("RESOLVED", 0L);
-        analytics.put("REJECTED", 0L);
+        // 1. Status Stats
+        Map<String, Long> statusMap = new HashMap<>();
+        List<Object[]> statusCounts = grievanceRepository.countGrievancesByStatus();
+        for (Object[] row : statusCounts) statusMap.put((String) row[0], (Long) row[1]);
+        response.put("status", statusMap);
 
-        for (Object[] result : results) {
-            analytics.put((String) result[0], (Long) result[1]);
-        }
-        return ResponseEntity.ok(analytics);
+        // 2. Category/Department Stats
+        Map<String, Long> deptMap = new HashMap<>();
+        List<Object[]> deptCounts = grievanceRepository.countGrievancesByDepartment();
+        for (Object[] row : deptCounts) deptMap.put((String) row[0], (Long) row[1]);
+        response.put("department", deptMap);
+
+        // 3. Zone/Location Stats
+        Map<String, Long> zoneMap = new HashMap<>();
+        List<Object[]> zoneCounts = grievanceRepository.countGrievancesByLocation();
+        for (Object[] row : zoneCounts) zoneMap.put((String) row[0], (Long) row[1]);
+        response.put("zone", zoneMap);
+
+        // 4. SLA Stats
+        long slaMet = grievanceRepository.countSlaMet();
+        long slaBreached = grievanceRepository.countSlaBreached();
+        response.put("sla", Map.of("Met", slaMet, "Breached", slaBreached));
+
+        return ResponseEntity.ok(response);
     }
 }

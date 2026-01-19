@@ -7,26 +7,38 @@
       <span class="admin-badge">Administrator</span>
       <button class="logout-btn" (click)="logout()">Logout ➜</button>
     </div>
-  </div>  
+  </div>
 
   <div class="main-content">
+    <div class="section-container" *ngIf="isBrowser">
+      <div class="section-header">
+        <h2>📊 System Analytics</h2>
+      </div>
 
-    <div class="section-container" *ngIf="isBrowser" style="flex: 1; min-width: 300px;">
-            <div class="section-header">
-                <h2>📊 Analytics</h2>
-            </div>
-            <div style="height: 300px; display: flex; justify-content: center;">
-                <canvas baseChart
-                    [type]="'pie'"
-                    [datasets]="pieChartDatasets"
-                    [labels]="pieChartLabels"
-                    [options]="pieChartOptions"
-                    [plugins]="pieChartPlugins"
-                    [legend]="pieChartLegend">
-                </canvas>
-            </div>
+      <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+
+        <div class="chart-card">
+          <h3>Complaint Status</h3>
+          <canvas baseChart [type]="'pie'" [datasets]="pieChartDatasets" [labels]="pieChartLabels" [options]="pieChartOptions"></canvas>
         </div>
 
+        <div class="chart-card">
+          <h3>SLA Performance</h3>
+          <canvas baseChart [type]="'doughnut'" [datasets]="slaChartDatasets" [labels]="slaChartLabels" [options]="slaChartOptions"></canvas>
+        </div>
+
+        <div class="chart-card">
+          <h3>Category Analysis</h3>
+          <canvas baseChart [type]="'bar'" [datasets]="deptChartDatasets" [labels]="deptChartLabels" [options]="deptChartOptions"></canvas>
+        </div>
+
+        <div class="chart-card">
+          <h3>Top 5 Red Zones</h3>
+          <canvas baseChart [type]="'bar'" [datasets]="zoneChartDatasets" [labels]="zoneChartLabels" [options]="zoneChartOptions"></canvas>
+        </div>
+
+      </div>
+    </div>
     <div class="section-container" *ngIf="pendingOfficers.length > 0">
       <div class="section-header">
         <h2>🔔 Pending Access Requests</h2>
@@ -241,7 +253,7 @@
             <div class="reject">
               <button class="action-btn reject" (click)="reject(g)">Reject</button>
             </div>
-          
+
 
           <div
             class="btn-stack"
@@ -265,4 +277,5 @@
       </div>
     </div>
   </div>
+</div>
 </div>
