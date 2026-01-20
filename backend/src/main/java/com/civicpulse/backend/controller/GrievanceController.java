@@ -265,10 +265,10 @@ public class GrievanceController {
         grievanceRepository.save(grievance);
         return ResponseEntity.ok(Map.of("message", "Grievance reopened successfully"));
     }
-    @GetMapping("/analytics")
+    @GetMapping("/stats/location")
     public ResponseEntity<Map<String, Long>> getStatsByLocation() {
         List<Object[]> results = grievanceRepository.countGrievancesByLocation();
-        Map<String, Long> stats = new java.util.HashMap<>();
+        Map<String, Long> stats = new HashMap<>();
 
         for (Object[] result : results) {
             String location = (String) result[0];
