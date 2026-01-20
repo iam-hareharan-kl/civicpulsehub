@@ -1,31 +1,62 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {Component, OnInit, ChangeDetectorRef, Inject, PLATFORM_ID} from '@angular/core';
+import {CommonModule, isPlatformBrowser} from '@angular/common';
 import { GrievanceService } from '../service/grievance';
 import { AuthService } from '../service/auth-service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import {HttpClient} from '@angular/common/http';
+import {ChartOptions} from 'chart.js';
+import {BaseChartDirective} from 'ng2-charts';
 
 @Component({
   selector: 'app-officer-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, BaseChartDirective],
   templateUrl: './officer.html',
   styleUrls: ['./officer.css'],
 })
 export class Officer implements OnInit {
   grievances: any[] = [];
-  selectedFile: File | null = null;
   activeTab: 'ASSIGNED' | 'IN_PROGRESS' | 'RESOLVED' = 'ASSIGNED';
+  private apiUrl = 'http://localhost:8080/api';
+  isBrowser: boolean;
+  showAnalytics: boolean = false;
+
+  public zoneChartOptions: ChartOptions<'bar'> = { responsive: true, indexAxis: 'y' }; // Horizontal Bar
+  public zoneChartLabels: string[] = [];
+  public zoneChartDatasets = [{ data: [] as number[], label: 'Complaints', backgroundColor: '#ef4444' }];
+
+
 
   constructor(
     private grievanceService: GrievanceService,
     private authService: AuthService,
     private router: Router,
-    private cdr: ChangeDetectorRef
-  ) {}
+    private cdr: ChangeDetectorRef,
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: Object // 3. Inject Platform ID
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
+
 
   ngOnInit() {
     this.loadAssignedTasks();
+    this.loadChartData();
+  }
+
+  loadChartData() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.http.get<any>(`${this.apiUrl}/admin/analytics/dashboard`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      }).subscribe(data => {
+        const zone = data.zone || {};
+        const sortedZones = Object.entries(zone).sort((a: any, b: any) => b[1] - a[1]).slice(0, 5); // Top 5
+        this.zoneChartLabels = sortedZones.map(z => z[0]);
+        this.zoneChartDatasets = [{ data: sortedZones.map(z => z[1] as number), label: 'Complaints', backgroundColor: '#ef4444' }];
+        this.cdr.detectChanges();
+      });
+    }
   }
 
   loadAssignedTasks() {
@@ -75,7 +106,7 @@ export class Officer implements OnInit {
 
   getTimeRemaining(g: any): string {
     if (!g.expectedCompletionDate) return '';
-    
+
     const due = new Date(g.expectedCompletionDate).getTime();
     const now = new Date().getTime();
     const diffMs = due - now;
@@ -92,7 +123,7 @@ export class Officer implements OnInit {
     if (!g.expectedCompletionDate) return '';
     const due = new Date(g.expectedCompletionDate).getTime();
     const now = new Date().getTime();
-    
+
     if (due < now) return 'text-danger'; // Overdue (Red)
     if (due - now < 3600000 * 4) return 'text-warning'; // Less than 4 hours (Orange)
     return 'text-success'; // Safe (Green)
@@ -102,6 +133,14 @@ export class Officer implements OnInit {
     const file = event.target.files[0];
     if (file) {
       grievance.selectedEvidence = file; // Attach file to the specific grievance object
+    }
+  }
+  toggleAnalytics() {
+    this.showAnalytics = !this.showAnalytics;
+
+    // Only load data if showing and not already populated (optional check, or refresh every time)
+    if (this.showAnalytics) {
+      this.loadChartData();
     }
   }
 }

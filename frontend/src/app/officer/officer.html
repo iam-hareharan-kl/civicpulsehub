@@ -3,10 +3,27 @@
     <div class="brand">
       <h1>Officer<span>Portal</span></h1>
     </div>
+    <div class="header-right">
+        <button class="analytics-btn" (click)="toggleAnalytics()">
+        {{ showAnalytics ? 'Hide Analytics' : 'Analytics 📊' }}
+    </button>
     <button class="logout-btn" (click)="logout()">Logout ➜</button>
+    </div>
   </div>
 
   <div class="main-content">
+    <div class="section-container" *ngIf="isBrowser && showAnalytics">
+      <div class="section-header">
+        <h2>📊 System Analytics</h2>
+      </div>
+      <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+        <div class="chart-card">
+          <h3>Top 5 Red Zones</h3>
+          <canvas baseChart [type]="'bar'" [datasets]="zoneChartDatasets" [labels]="zoneChartLabels" [options]="zoneChartOptions"></canvas>
+        </div>
+      </div>
+    </div>
+
     <div class="task-board-container">
       <div class="board-header">
          <div class="header-text">
@@ -33,15 +50,15 @@
          </div>
 
          <div class="task-card" *ngFor="let g of filteredGrievances">
-            
+
             <div class="card-top">
                 <div class="badges-left">
                     <span class="prio-pill" [ngClass]="g.priority?.toLowerCase()">{{ g.priority || 'MEDIUM' }}</span>
                 </div>
-                
+
                 <div class="badges-right">
-                    <span *ngIf="g.expectedCompletionDate && g.status !== 'RESOLVED'" 
-                          class="sla-badge" 
+                    <span *ngIf="g.expectedCompletionDate && g.status !== 'RESOLVED'"
+                          class="sla-badge"
                           [ngClass]="getTimeRemainingClass(g)">
                         ⏳ {{ getTimeRemaining(g) }}
                     </span>
@@ -55,7 +72,7 @@
                         <img [src]="'http://localhost:8080/uploads/' + g.imageUrl" alt="Evidence" />
                     </a>
                 </div>
-                
+
                 <h3 class="dept-title">{{ g.department }} Issue</h3>
                 <p class="desc-text">{{ g.description }}</p>
                 <div class="location-row">📍 {{ g.location }}</div>
@@ -67,7 +84,7 @@
 
             <div class="card-footer">
                 <div class="action-area">
-                    
+
                     <div class="input-wrap" *ngIf="g.status !== 'RESOLVED'">
                         <input type="text" [(ngModel)]="g.tempMessage" placeholder="Add resolution note..." class="note-input" />
                     </div>
@@ -78,9 +95,9 @@
                         </label>
                         <input type="file" (change)="onFileSelected($event, g)" accept="image/*">
                     </div>
-                    
+
                     <div class="resolved-info" *ngIf="g.status === 'RESOLVED'">
-                        
+
                         <div class="info-block">
                             <span class="label">Your Note:</span>
                             <p class="text">{{ g.officerMessage || 'No note added.' }}</p>
@@ -106,7 +123,7 @@
                     <button *ngIf="g.status === 'IN_PROGRESS'" class="btn-resolve" (click)="updateStatus(g, 'RESOLVED')">
                         Mark Resolved
                     </button>
-                    
+
                     <div *ngIf="g.status === 'RESOLVED'" class="done-status">
                         <span class="check">✔</span> Completed
                     </div>

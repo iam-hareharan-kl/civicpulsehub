@@ -21,6 +21,7 @@ export class Admin implements OnInit {
   pendingOfficers: any[] = [];
   slaConfigs: any[] = [];
   isBrowser: boolean;
+  showAnalytics: boolean = false;
 
   public pieChartOptions: ChartOptions<'pie'> = { responsive: true };
   public pieChartLabels = ['Pending', 'In Progress', 'Resolved', 'Rejected'];
@@ -64,7 +65,7 @@ export class Admin implements OnInit {
         this.cdr.detectChanges();
         this.loadPendingOfficers();
         this.loadSLAConfigs();
-        this.loadDashboardAnalytics();
+        // this.loadDashboardAnalytics();
     }
   }
 
@@ -256,5 +257,14 @@ export class Admin implements OnInit {
   logout() {
     this.authService.logout();
     this.router.navigate(['/']);
+  }
+
+  toggleAnalytics() {
+    this.showAnalytics = !this.showAnalytics;
+
+    // Only load data if showing and not already populated (optional check, or refresh every time)
+    if (this.showAnalytics) {
+      this.loadDashboardAnalytics();
+    }
   }
 }

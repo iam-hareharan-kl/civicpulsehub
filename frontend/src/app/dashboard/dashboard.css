@@ -13,6 +13,13 @@
   min-height: 100vh;
 }
 
+.btn-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Spacing between buttons */
+  margin-top: 10px;
+  width: 100%;
+}
 /* Header */
 .dashboard-header {
   display: flex;
@@ -354,18 +361,40 @@
   color: #1e293b;
 }
 .action-btn {
-  background: var(--primary);
-  color: white;
+  width: 100%;
   border: none;
-  padding: 8px;
+  padding: 10px; /* Increased padding for better click area */
   border-radius: 6px;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.action-btn:hover {
-  background: #4338ca;
+
+/* Specific Colors */
+.action-btn.assign {
+  background: var(--primary); /* Indigo/Blue */
+}
+.action-btn.assign:hover {
+  background: #4338ca; /* Darker Indigo */
+}
+
+.action-btn.reject {
+  background: #ef4444; /* Red */
+}
+.action-btn.reject:hover {
+  background: #dc2626; /* Darker Red */
+}
+
+.action-btn.notify {
+  background: #f59e0b; /* Amber/Orange */
+}
+.action-btn.notify:hover {
+  background: #d97706;
 }
 .rating-box {
   text-align: center;
@@ -482,14 +511,6 @@
   color: #16a34a;
   font-weight: bold;
 }
-.action-btn.notify {
-    background: #f59e0b; 
-    color: white;
-}
-.action-btn.notify:hover {
-    background: #d97706;
-}
-
 .notified-badge {
     text-align: center;
     font-size: 11px;
@@ -500,4 +521,23 @@
     border-radius: 6px;
     margin-top: 5px;
     border: 1px solid #a7f3d0;
+}
+
+.analytics-btn {
+  background: var(--primary);
+  color: white;
+  border: 1px solid var(--primary);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.analytics-btn:hover {
+  background: #4338ca; /* Darker shade of primary */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }

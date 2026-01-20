@@ -123,3 +123,34 @@
     font-size: 13px;
     margin: 8px 0;
 }
+.admin-badge {
+  background: #e0e7ff;
+  color: var(--primary);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.analytics-btn {
+  background: var(--primary);
+  color: white;
+  border: 1px solid var(--primary);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.analytics-btn:hover {
+  background: #4338ca; /* Darker shade of primary */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}

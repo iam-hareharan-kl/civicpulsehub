@@ -4,17 +4,19 @@
       <h1>Admin<span>Console</span></h1>
     </div>
     <div class="header-right">
+      <button class="analytics-btn" (click)="toggleAnalytics()">
+        {{ showAnalytics ? 'Hide Analytics' : 'Analytics 📊' }}
+      </button>
       <span class="admin-badge">Administrator</span>
       <button class="logout-btn" (click)="logout()">Logout ➜</button>
     </div>
   </div>
 
   <div class="main-content">
-    <div class="section-container" *ngIf="isBrowser">
+    <div class="section-container" *ngIf="isBrowser && showAnalytics">
       <div class="section-header">
         <h2>📊 System Analytics</h2>
       </div>
-
       <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 
         <div class="chart-card">
@@ -38,7 +40,7 @@
         </div>
 
       </div>
-    </div>
+     </div>
     <div class="section-container" *ngIf="pendingOfficers.length > 0">
       <div class="section-header">
         <h2>🔔 Pending Access Requests</h2>
@@ -240,27 +242,18 @@
                 👮 {{ g.officer.fullName }}
               </div>
             </div>
-
             <div class="btn-stack" *ngIf="g.status === 'PENDING' || g.status === 'REOPENED'">
               <button class="action-btn assign" (click)="assign(g)">
                 {{ g.status === 'REOPENED' ? 'Verify & Assign' : 'Assign Grievance' }}
               </button>
-              <div class="reject">
-              <button class="action-btn reject" (click)="reject(g)">Reject</button>
-              </div>
+              <button class="action-btn reject" (click)="reject(g)">
+                Reject
+              </button>
             </div>
 
-            <div class="reject">
-              <button class="action-btn reject" (click)="reject(g)">Reject</button>
+            <div class="btn-stack" *ngIf="(g.status === 'IN_PROGRESS' || g.status === 'RESOLVED') && !g.notified">
+              <button class="action-btn notify" (click)="notify(g)">🔔 Notify Citizen</button>
             </div>
-
-
-          <div
-            class="btn-stack"
-            *ngIf="(g.status === 'IN_PROGRESS' || g.status === 'RESOLVED') && !g.notified"
-          >
-            <button class="action-btn notify" (click)="notify(g)">🔔 Notify Citizen</button>
-          </div>
           <div
             *ngIf="g.notified && (g.status === 'IN_PROGRESS' || g.status === 'RESOLVED')"
             class="notified-badge"

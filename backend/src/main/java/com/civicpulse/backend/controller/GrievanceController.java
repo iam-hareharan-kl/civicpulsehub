@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -263,6 +264,19 @@ public class GrievanceController {
 
         grievanceRepository.save(grievance);
         return ResponseEntity.ok(Map.of("message", "Grievance reopened successfully"));
+    }
+    @GetMapping("/stats/location")
+    public ResponseEntity<Map<String, Long>> getStatsByLocation() {
+        List<Object[]> results = grievanceRepository.countGrievancesByLocation();
+        Map<String, Long> stats = new java.util.HashMap<>();
+
+        for (Object[] result : results) {
+            String location = (String) result[0];
+            Long count = (Long) result[1];
+            stats.put(location != null ? location : "Unknown", count);
+        }
+
+        return ResponseEntity.ok(stats);
     }
 
 }
