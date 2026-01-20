@@ -22,7 +22,7 @@ export class Officer implements OnInit {
   isBrowser: boolean;
   showAnalytics: boolean = false;
 
-  public zoneChartOptions: ChartOptions<'bar'> = { responsive: true, indexAxis: 'y' }; // Horizontal Bar
+  public zoneChartOptions: ChartOptions<'bar'> = { responsive: true, maintainAspectRatio: false, indexAxis: 'y' }; // Horizontal Bar
   public zoneChartLabels: string[] = [];
   public zoneChartDatasets = [{ data: [] as number[], label: 'Complaints', backgroundColor: '#ef4444' }];
 

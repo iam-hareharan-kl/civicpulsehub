@@ -16,14 +16,23 @@
       <div class="section-header">
         <h2>📊 System Analytics</h2>
       </div>
-      <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+      <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px;">
         <div class="chart-card">
-          <h3>Top 5 Red Zones</h3>
-          <canvas baseChart [type]="'bar'" [datasets]="zoneChartDatasets" [labels]="zoneChartLabels" [options]="zoneChartOptions"></canvas>
+           <h3>Top 5 Red Zones</h3>
+            <div class="chart-wrapper">
+               <canvas baseChart 
+                   [type]="'bar'" 
+                   [datasets]="zoneChartDatasets" 
+                   [labels]="zoneChartLabels" 
+                   [options]="zoneChartOptions">
+               </canvas>
+            </div>
         </div>
       </div>
     </div>
+    <div>
 
+    </div>
     <div class="task-board-container">
       <div class="board-header">
          <div class="header-text">

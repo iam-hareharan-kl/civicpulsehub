@@ -154,3 +154,21 @@
   align-items: center;
   gap: 15px;
 }
+
+.section-container {
+    margin-bottom: 50px; /* Creates the gap you requested */
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 300px; /* Forces the chart to stay this height */
+    width: 100%;
+}
+
+.chart-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
