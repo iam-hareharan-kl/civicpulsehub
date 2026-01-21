@@ -1,7 +1,7 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { GrievanceService } from '../service/grievance';
 import { AuthService } from '../service/auth-service';
 import { Router } from '@angular/router';
@@ -30,12 +30,15 @@ export class Citizen implements OnInit {
     private grievanceService: GrievanceService,
     private authService: AuthService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
-    this.initForm();
-    this.loadData();
+    if (isPlatformBrowser(this.platformId)) {
+        this.initForm();
+        this.loadData();
+    }
   }
 
   initForm() {
@@ -47,6 +50,7 @@ export class Citizen implements OnInit {
   }
 
   loadData() {
+    if (!isPlatformBrowser(this.platformId)) return;
     this.grievanceService.getStats().subscribe((data) => (this.stats = data));
     this.grievanceService.getMyGrievances().subscribe((data) => (this.grievances = data));
 

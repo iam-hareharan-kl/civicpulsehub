@@ -44,11 +44,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/grievances/*/status").hasAnyAuthority("ADMIN", "ROLE_ADMIN", "OFFICER", "ROLE_OFFICER")
                         .requestMatchers(HttpMethod.PUT, "/api/grievances/*/assign").hasAnyAuthority("ADMIN", "ROLE_ADMIN")
 
-                        // 4. Admin Only
-                        .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN", "ROLE_ADMIN")
+                        // 4. Admin & Analytics (ORDER CHANGED HERE)
+                        // 🟢 FIX: This SPECIFIC rule must be FIRST
                         .requestMatchers("/api/admin/analytics/**").hasAnyAuthority("ADMIN", "ROLE_ADMIN", "OFFICER", "ROLE_OFFICER")
-                        .requestMatchers("/api/sla/**").hasAnyAuthority("ADMIN", "ROLE_ADMIN")
 
+                        // 🟢 THEN the GENERAL rule comes after
+                        .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN", "ROLE_ADMIN")
+
+                        .requestMatchers("/api/sla/**").hasAnyAuthority("ADMIN", "ROLE_ADMIN")
                         // 5. Secure everything else
                         .anyRequest().authenticated()
                 )
