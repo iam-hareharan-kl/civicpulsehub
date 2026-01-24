@@ -11,7 +11,7 @@ public class SLAConfig {
     private Long id;
 
     @Column(unique = true)
-    private String priority; // HIGH, MEDIUM, LOW
+    private String priority;
 
-    private int resolutionTimeInHours; // e.g., 24, 48, 72
+    private int resolutionTimeInHours;
 }

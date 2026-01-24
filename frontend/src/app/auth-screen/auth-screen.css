@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* Global Reset for this component context */
 * {
   box-sizing: border-box;
 }
@@ -8,7 +7,6 @@
 :host {
   display: block;
   font-family: 'Inter', sans-serif;
-  /* FORCE FULL SCREEN */
   position: fixed;
   top: 0;
   left: 0;
@@ -17,8 +15,8 @@
   margin: 0;
   padding: 0;
   overflow: hidden;
-  z-index: 9999; /* Ensure it sits on top of everything */
-  background: white; /* Prevent transparent background showing body color */
+  z-index: 9999; 
+  background: white;
 }
 
 .auth-container {
@@ -27,9 +25,8 @@
   height: 100%;
 }
 
-/* --- LEFT SIDE: BRANDING --- */
 .brand-panel {
-  flex: 0.8; /* Takes ~45% width */
+  flex: 0.8; 
   background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
   color: white;
   padding: 70px;
@@ -39,7 +36,6 @@
   overflow: hidden;
 }
 
-/* Decorative Circles */
 .brand-panel::before {
   content: '';
   position: absolute;
@@ -136,7 +132,6 @@
   opacity: 0.6;
 }
 
-/* --- RIGHT SIDE: FORMS --- */
 .form-panel {
   flex: 1.2;
   background: #ffffff;
@@ -185,7 +180,6 @@
   font-size: 16px;
 }
 
-/* Inputs */
 label {
   display: block;
   font-size: 13px;
@@ -207,7 +201,7 @@ select {
   font-size: 15px;
   color: #1e293b;
   transition: all 0.2s ease;
-  box-sizing: border-box; /* Ensure padding doesn't affect width */
+  box-sizing: border-box; 
 }
 
 input:focus,
@@ -222,7 +216,6 @@ input::placeholder {
   color: #94a3b8;
 }
 
-/* Primary Button */
 .primary-btn {
   width: 100%;
   margin-top: 35px;
@@ -248,7 +241,6 @@ input::placeholder {
   transform: translateY(0);
 }
 
-/* Switch Link */
 .switch-text {
   text-align: center;
   margin-top: 30px;
@@ -268,7 +260,6 @@ input::placeholder {
   text-decoration: underline;
 }
 
-/* Alerts */
 .success-message {
   background: #ecfdf5;
   color: #065f46;
@@ -307,13 +298,10 @@ input::placeholder {
   .auth-container { flex-direction: column; overflow-y: auto; }
   .brand-panel { flex: none; padding: 40px 30px; }
   .logo-area h1 { font-size: 32px; }
-  .info-cards { display: none; /* Hide detailed info on mobile to save space */ }
+  .info-cards { display: none; }
   .form-panel { padding: 30px 20px; }
 }
 
-/* ... existing styles ... */
-
-/* Add this new class for the Forgot Password link position */
 .forgot-link-wrapper {
   text-align: right;
   margin-top: 8px;
@@ -330,5 +318,3 @@ input::placeholder {
 .forgot-link:hover {
   text-decoration: underline;
 }
-
-/* ... existing styles ... */

@@ -16,11 +16,11 @@
 .btn-stack {
   display: flex;
   flex-direction: column;
-  gap: 8px; /* Spacing between buttons */
+  gap: 8px; 
   margin-top: 10px;
   width: 100%;
 }
-/* Header */
+
 .dashboard-header {
   display: flex;
   justify-content: space-between;
@@ -64,7 +64,6 @@
   color: white;
 }
 
-/* Section: Pending Officers */
 .section-container {
   margin-bottom: 40px;
 }
@@ -159,7 +158,6 @@
   justify-content: center;
 }
 
-/* Ticket Board */
 .ticket-board {
   background: white;
   border-radius: 16px;
@@ -235,7 +233,6 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Ticket List */
 .ticket-list-wrapper {
   padding: 25px;
   background: #f8fafc;
@@ -363,7 +360,7 @@
 .action-btn {
   width: 100%;
   border: none;
-  padding: 10px; /* Increased padding for better click area */
+  padding: 10px; 
   border-radius: 6px;
   font-size: 12px;
   font-weight: 600;
@@ -375,23 +372,22 @@
   justify-content: center;
 }
 
-/* Specific Colors */
 .action-btn.assign {
-  background: var(--primary); /* Indigo/Blue */
+  background: var(--primary); 
 }
 .action-btn.assign:hover {
-  background: #4338ca; /* Darker Indigo */
+  background: #4338ca; 
 }
 
 .action-btn.reject {
-  background: #ef4444; /* Red */
+  background: #ef4444;
 }
 .action-btn.reject:hover {
-  background: #dc2626; /* Darker Red */
+  background: #dc2626; 
 }
 
 .action-btn.notify {
-  background: #f59e0b; /* Amber/Orange */
+  background: #f59e0b; 
 }
 .action-btn.notify:hover {
   background: #d97706;
@@ -463,17 +459,16 @@
   padding: 5px;
 }
 
-/* Due Date Styles */
 .due-date-tag {
   font-size: 12px;
-  color: #059669; /* Green */
+  color: #059669; 
   background: #ecfdf5;
   padding: 2px 6px;
   border-radius: 4px;
-  margin-left: auto; /* Pushes it to the right */
+  margin-left: auto; 
 }
 .due-date-tag.overdue {
-  color: #dc2626; /* Red */
+  color: #dc2626; 
   background: #fef2f2;
   font-weight: bold;
 }
@@ -538,6 +533,6 @@
 }
 
 .analytics-btn:hover {
-  background: #4338ca; /* Darker shade of primary */
+  background: #4338ca;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }

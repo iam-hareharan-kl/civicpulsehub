@@ -33,8 +33,6 @@ public class GrievanceController {
     private final GrievanceRepository grievanceRepository;
     private final UserRepository userRepository;
     private final SLAConfigRepository slaConfigRepository;
-
-    // Directory to store uploaded images
     private static final String UPLOAD_DIR = "./uploads/";
 
 
@@ -49,7 +47,6 @@ public class GrievanceController {
             @RequestParam(value = "image", required = false) MultipartFile image,
             Principal principal) throws IOException {
 
-        // Get the logged-in user from the JWT token (Principal)
         User user = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -59,16 +56,11 @@ public class GrievanceController {
         grievance.setLocation(location);
         grievance.setUser(user);
 
-        // Handle File Upload
         if (image != null && !image.isEmpty()) {
-            // Create uploads directory if it doesn't exist
             Files.createDirectories(Paths.get(UPLOAD_DIR));
-
-            // Generate unique filename
             String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
             Path filePath = Paths.get(UPLOAD_DIR + fileName);
             Files.write(filePath, image.getBytes());
-
             grievance.setImageUrl(fileName);
         }
 
@@ -115,7 +107,6 @@ public class GrievanceController {
         User officer = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new RuntimeException("Officer not found"));
 
-        // REVERT TO THIS (Fetch All):
         return ResponseEntity.ok(grievanceRepository.findByOfficerOrderByCreatedAtDesc(officer));
     }
 
@@ -129,7 +120,6 @@ public class GrievanceController {
         Grievance grievance = grievanceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Grievance not found"));
 
-        // 1. Validation: Mandatory File for Resolution
         if ("RESOLVED".equals(status)) {
             if (file == null || file.isEmpty()) {
                 return ResponseEntity.badRequest().body("You must upload an evidence picture to resolve this grievance.");
@@ -137,23 +127,20 @@ public class GrievanceController {
             grievance.setResolvedAt(LocalDateTime.now());
         }
 
-        // 2. Handle Officer's File Upload (Save to NEW Field)
         if (file != null && !file.isEmpty()) {
             try {
-                // Ensure uploads directory exists
                 Files.createDirectories(Paths.get(UPLOAD_DIR));
 
                 String fileName = System.currentTimeMillis() + "_RES_" + file.getOriginalFilename();
                 Path path = Paths.get(UPLOAD_DIR + fileName);
-                Files.write(path, file.getBytes()); // Write bytes to file
+                Files.write(path, file.getBytes());
 
-                grievance.setResolutionImageUrl(fileName); // <--- SAVING TO NEW FIELD
+                grievance.setResolutionImageUrl(fileName);
             } catch (Exception e) {
                 return ResponseEntity.internalServerError().body("Failed to upload evidence image.");
             }
         }
 
-        // 3. Update Status & Message
         grievance.setStatus(status);
         if (message != null && !message.isEmpty()) {
             grievance.setOfficerMessage(message);
@@ -202,7 +189,6 @@ public class GrievanceController {
         Grievance grievance = grievanceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Grievance not found"));
 
-        // 1. Assign Officer
         if (request.getOfficerId() != null) {
             User officer = userRepository.findById(request.getOfficerId())
                     .orElseThrow(() -> new RuntimeException("Officer not found"));
@@ -210,23 +196,18 @@ public class GrievanceController {
             grievance.setStatus("ASSIGNED");
         }
 
-        // 2. Set Priority & Calculate SLA (Due Date)
         if (request.getPriority() != null) {
             grievance.setPriority(request.getPriority());
 
-            // --- SLA CALCULATION START ---
             SLAConfig sla = slaConfigRepository.findByPriority(request.getPriority())
                     .orElse(null);
 
             if (sla != null) {
-                // Due Date = Now + Configured Hours
                 grievance.setExpectedCompletionDate(LocalDateTime.now().plusHours(sla.getResolutionTimeInHours()));
             }
-            // --- SLA CALCULATION END ---
         }
 
         grievanceRepository.save(grievance);
-        // ... (Send Email Logic if you have it) ...
         return ResponseEntity.ok(Map.of("message", "Grievance updated with SLA"));
     }
 
@@ -239,8 +220,6 @@ public class GrievanceController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
-    // ... inside GrievanceController ...
 
     @PutMapping("/{id}/reopen")
     public ResponseEntity<?> reopenGrievance(

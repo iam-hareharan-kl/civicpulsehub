@@ -18,9 +18,9 @@ public class User {
 
     private String password;
 
-    private String role; // 'CITIZEN' or 'OFFICER'
+    private String role;
 
-    private boolean isApproved; // False by default for Officers
+    private boolean isApproved;
 
     private String department;
 }

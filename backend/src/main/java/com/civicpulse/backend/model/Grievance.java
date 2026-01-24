@@ -14,13 +14,13 @@ public class Grievance {
 
     private String department;
     private String description;
-    private String status; // PENDING, ASSIGNED, RESOLVED
-    private String priority; // LOW, MEDIUM, HIGH (New Field)
+    private String status;
+    private String priority;
     private String imageUrl;
     private String resolutionImageUrl;
     private String location;
     private String officerMessage;
-    private String feedback; // Citizen's comment
+    private String feedback;
     private Integer rating;
     private LocalDateTime expectedCompletionDate;
     private LocalDateTime resolvedAt;
@@ -32,18 +32,18 @@ public class Grievance {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private User user; // Citizen who reported it
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "officer_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private User officer; // Officer assigned (New Field)
+    private User officer;
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         if (status == null) status = "PENDING";
-        if (priority == null) priority = "MEDIUM"; // Default priority
+        if (priority == null) priority = "MEDIUM";
     }
 
 

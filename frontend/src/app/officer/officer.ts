@@ -22,7 +22,7 @@ export class Officer implements OnInit {
   isBrowser: boolean;
   showAnalytics: boolean = false;
 
-  public zoneChartOptions: ChartOptions<'bar'> = { responsive: true, maintainAspectRatio: false, indexAxis: 'y' }; // Horizontal Bar
+  public zoneChartOptions: ChartOptions<'bar'> = { responsive: true, maintainAspectRatio: false, indexAxis: 'y' }; 
   public zoneChartLabels: string[] = [];
   public zoneChartDatasets = [{ data: [] as number[], label: 'Complaints', backgroundColor: '#ef4444' }];
 
@@ -34,7 +34,7 @@ export class Officer implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private http: HttpClient,
-    @Inject(PLATFORM_ID) private platformId: Object // 3. Inject Platform ID
+    @Inject(PLATFORM_ID) private platformId: Object 
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
@@ -51,7 +51,7 @@ export class Officer implements OnInit {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       }).subscribe(data => {
         const zone = data.zone || {};
-        const sortedZones = Object.entries(zone).sort((a: any, b: any) => b[1] - a[1]).slice(0, 5); // Top 5
+        const sortedZones = Object.entries(zone).sort((a: any, b: any) => b[1] - a[1]).slice(0, 5); 
         this.zoneChartLabels = sortedZones.map(z => z[0]);
         this.zoneChartDatasets = [{ data: sortedZones.map(z => z[1] as number), label: 'Complaints', backgroundColor: '#ef4444' }];
         this.cdr.detectChanges();
@@ -77,7 +77,6 @@ export class Officer implements OnInit {
   updateStatus(g: any, newStatus: string) {
     const message = g.tempMessage || '';
 
-    // Validation: Check if Resolved but no file
     if (newStatus === 'RESOLVED') {
       if (!g.selectedEvidence) {
         alert("⚠️ You must upload an evidence picture before marking as Resolved!");
@@ -86,11 +85,10 @@ export class Officer implements OnInit {
       if (!confirm("Are you sure you want to resolve this? This action cannot be undone.")) return;
     }
 
-    // Call Service with File
     this.grievanceService.updateStatus(g.id, newStatus, message, g.selectedEvidence).subscribe({
       next: () => {
         alert("Success! Status Updated.");
-        this.loadAssignedTasks(); // Refresh list
+        this.loadAssignedTasks(); 
       },
       error: (err) => {
         console.error(err);
@@ -124,21 +122,20 @@ export class Officer implements OnInit {
     const due = new Date(g.expectedCompletionDate).getTime();
     const now = new Date().getTime();
 
-    if (due < now) return 'text-danger'; // Overdue (Red)
-    if (due - now < 3600000 * 4) return 'text-warning'; // Less than 4 hours (Orange)
-    return 'text-success'; // Safe (Green)
+    if (due < now) return 'text-danger'; 
+    if (due - now < 3600000 * 4) return 'text-warning'; 
+    return 'text-success'; 
   }
 
   onFileSelected(event: any, grievance: any) {
     const file = event.target.files[0];
     if (file) {
-      grievance.selectedEvidence = file; // Attach file to the specific grievance object
+      grievance.selectedEvidence = file; 
     }
   }
   toggleAnalytics() {
     this.showAnalytics = !this.showAnalytics;
 
-    // Only load data if showing and not already populated (optional check, or refresh every time)
     if (this.showAnalytics) {
       this.loadChartData();
     }

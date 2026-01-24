@@ -59,7 +59,6 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Extract token from URL query params
     this.route.queryParams.subscribe(params => {
       this.token = params['token'];
       if (!this.token) {

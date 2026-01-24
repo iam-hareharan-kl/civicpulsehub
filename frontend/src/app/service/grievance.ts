@@ -2,8 +2,8 @@ import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators'; // Import catchError
-import { Router } from '@angular/router'; // Import Router
+import { catchError } from 'rxjs/operators'; 
+import { Router } from '@angular/router'; 
 @Injectable({
   providedIn: 'root',
 })
@@ -54,7 +54,7 @@ export class GrievanceService {
     return this.http.put(
       `${this.apiUrl}/${id}/status`, 
       formData, 
-      { headers: this.getAuthHeaders() } // Do NOT set Content-Type to JSON manually
+      { headers: this.getAuthHeaders() } 
     );
   }
 
@@ -74,8 +74,6 @@ export class GrievanceService {
     );
   }
 
-  // ... inside GrievanceService ...
-
   reopenGrievance(id: number, reason: string): Observable<any> {
     return this.http.put(
       `${this.apiUrl}/${id}/reopen`, 
@@ -85,11 +83,9 @@ export class GrievanceService {
   }
   private handleError(error: HttpErrorResponse) {
     if (error.status === 403) {
-      // Token is invalid/expired -> Force Logout
       if (isPlatformBrowser(this.platformId)) {
         localStorage.removeItem('token');
         localStorage.removeItem('userRole');
-        // Redirect to login
         this.router.navigate(['/']); 
       }
     }

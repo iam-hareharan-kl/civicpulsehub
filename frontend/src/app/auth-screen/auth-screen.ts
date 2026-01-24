@@ -13,7 +13,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./auth-screen.css'],
 })
 export class AuthScreen implements OnInit {
-  // View State: 'LOGIN' | 'REGISTER' | 'FORGOT'
   viewState: string = 'LOGIN';
   
   successMessage = '';
@@ -60,7 +59,6 @@ export class AuthScreen implements OnInit {
     });
   }
 
-  // --- Navigation Switches ---
   switchToRegister(): void {
     this.viewState = 'REGISTER';
     this.clearMessages();
@@ -80,8 +78,6 @@ export class AuthScreen implements OnInit {
     this.successMessage = '';
     this.errorMessage = '';
   }
-
-  // --- Form Submissions ---
 
   submitLogin(): void {
     if (this.loginForm.invalid) return;
@@ -142,8 +138,6 @@ export class AuthScreen implements OnInit {
         this.cdr.detectChanges();
       },
       error: (error) => {
-        // Even on error, we often show the same message for security, 
-        // but here we display the error for debugging if needed.
         this.errorMessage = 'Unable to process request. Please try again.';
         this.cdr.detectChanges();
       }

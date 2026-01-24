@@ -15,7 +15,7 @@ import { ChartOptions } from 'chart.js';
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css']
 })
-export class Admin implements OnInit {
+export class Dashboard implements OnInit {
   grievances: any[] = [];
   officers: any[] = [];
   pendingOfficers: any[] = [];
@@ -23,6 +23,7 @@ export class Admin implements OnInit {
   isBrowser: boolean;
   showAnalytics: boolean = false;
 
+  // 1. Status Chart (Pie)
   public pieChartOptions: ChartOptions<'pie'> = { responsive: true };
   public pieChartLabels = ['Pending', 'In Progress', 'Resolved', 'Rejected'];
   public pieChartDatasets = [{ data: [0, 0, 0, 0], backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#ef4444'] }];
@@ -54,7 +55,7 @@ export class Admin implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private http: HttpClient,
-    @Inject(PLATFORM_ID) private platformId: Object // 3. Inject Platform ID
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
@@ -65,7 +66,6 @@ export class Admin implements OnInit {
         this.cdr.detectChanges();
         this.loadPendingOfficers();
         this.loadSLAConfigs();
-        // this.loadDashboardAnalytics();
     }
   }
 
@@ -148,7 +148,6 @@ export class Admin implements OnInit {
       return;
     }
 
-    // 6. Check Platform here too
     if (isPlatformBrowser(this.platformId)) {
         this.http.put(`${this.apiUrl}/admin/officers/${officer.id}/approve`,
         { department: officer.selectedDept },
@@ -261,8 +260,6 @@ export class Admin implements OnInit {
 
   toggleAnalytics() {
     this.showAnalytics = !this.showAnalytics;
-
-    // Only load data if showing and not already populated (optional check, or refresh every time)
     if (this.showAnalytics) {
       this.loadDashboardAnalytics();
     }

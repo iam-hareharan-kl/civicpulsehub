@@ -13,10 +13,9 @@ public interface GrievanceRepository extends JpaRepository<Grievance, Long> {
     List<Grievance> findByOfficerOrderByCreatedAtDesc(User officer);
     long countByUser(User user);
     long countByUserAndStatus(User user, String status);
+
     @Query("SELECT g.status, COUNT(g) FROM Grievance g GROUP BY g.status")
     List<Object[]> countGrievancesByStatus();
-
-    // --- NEW ANALYTICS QUERIES ---
 
     @Query("SELECT g.department, COUNT(g) FROM Grievance g GROUP BY g.department")
     List<Object[]> countGrievancesByDepartment();

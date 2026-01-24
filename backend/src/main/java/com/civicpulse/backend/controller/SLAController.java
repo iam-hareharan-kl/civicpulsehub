@@ -20,7 +20,7 @@ public class SLAController {
         return ResponseEntity.ok(slaConfigRepository.findAll());
     }
 
-    @PostMapping("/init") // Run this once to setup defaults if empty
+    @PostMapping("/init")
     public ResponseEntity<?> initDefaults() {
         if (slaConfigRepository.count() == 0) {
             createConfig("HIGH", 24);

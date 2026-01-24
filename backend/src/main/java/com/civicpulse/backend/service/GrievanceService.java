@@ -27,7 +27,7 @@ public class GrievanceService {
         return grievanceRepository.save(grievance);
     }
 
-    // ✅ NEW METHOD: Logic for the "Notify" button
+    // Notifying the citizen
     public void notifyCitizen(Long id) {
         Grievance grievance = grievanceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Grievance not found with ID: " + id));

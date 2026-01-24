@@ -64,7 +64,6 @@ export class Citizen implements OnInit {
     this.selectedFile = event.target.files[0];
   }
 
-  // Feature: Auto-detect location
   getLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -94,7 +93,7 @@ export class Citizen implements OnInit {
         this.grievanceForm.reset({ department: 'Roads' });
         this.selectedFile = null;
         this.cdr.detectChanges();
-        this.loadData(); // Refresh list and stats
+        this.loadData(); 
         setTimeout(() => {
           this.successMessage = '';
           this.cdr.detectChanges();
@@ -106,7 +105,7 @@ export class Citizen implements OnInit {
 
   logout() {
     this.authService.logout();
-    this.router.navigate(['/']); // Redirect to Auth Screen
+    this.router.navigate(['/']); 
   }
 
   openFeedbackModal(g: any) {
@@ -130,7 +129,7 @@ export class Citizen implements OnInit {
         next: () => {
           alert('Thank you for your feedback!');
           this.closeFeedbackModal();
-          this.loadData(); // Refresh list to hide the button
+          this.loadData(); 
         },
         error: () => alert('Failed to submit feedback'),
       });
@@ -138,12 +137,12 @@ export class Citizen implements OnInit {
 
   reopen(g: any) {
     const reason = prompt("Please describe why you are not satisfied:");
-    if (!reason) return; // User cancelled
+    if (!reason) return;
 
     this.grievanceService.reopenGrievance(g.id, reason).subscribe({
       next: () => {
         alert("Grievance has been reopened. An officer will review it again.");
-        this.loadData(); // Refresh list
+        this.loadData(); 
       },
       error: () => alert("Failed to reopen grievance.")
     });
